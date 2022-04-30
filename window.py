@@ -19,7 +19,7 @@ class Window:
         self.place_components()
         self.bind_gui_elements()
 
-        self.ani = animation.FuncAnimation(self.plot.fig, self.plot.animate, frames=200, interval=25, blit=False)
+        self.ani = animation.FuncAnimation(self.plot.fig, self.plot.animate, frames=130, interval=20, blit=False, cache_frame_data=False)
 
     def place_components(self):
         self.label.grid(column=0, row=0)
@@ -39,4 +39,5 @@ class Window:
             self.plot.new_equation(Sine())
         else:
             self.plot.new_equation(TripleSine())
+        self.ani.frame_seq = self.ani.new_frame_seq()
         self.equation.config(text=self.plot.equation.text_equation())
