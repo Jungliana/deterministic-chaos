@@ -1,4 +1,5 @@
 import numpy as np
+import itertools
 
 
 # parent equation class
@@ -9,8 +10,14 @@ class Equation:
         self.xlim = (0, 10)
         self.ylim = (-10, 10)
 
-    def update(self, i):
-        return self.x, self.y
+    def data_gen(self):
+        yield 0, 0
+
+    def update(self, data):
+        x, y = data
+        self.x.append(x)
+        self.y.append(y)
+        return x, y
 
     @staticmethod
     def text_equation():
@@ -24,12 +31,11 @@ class Sine(Equation):
         self.xlim = (0, 2*np.pi)
         self.ylim = (-np.pi, np.pi)
 
-    def update(self, i):
-        i = i/20
-        self.x.append(i)
-        y = np.sin(2 * np.pi * (i - 0.01 * i))
-        self.y.append(y)
-        return i, y
+    def data_gen(self):
+        for cnt in itertools.count():
+            x = cnt / 20
+            y = np.sin(2 * np.pi * (x - 0.01 * x))
+            yield x, y
 
     @staticmethod
     def text_equation():
@@ -43,14 +49,13 @@ class TripleSine(Equation):
         self.xlim = (0, 2*np.pi)
         self.ylim = (-4, 4)
 
-    def update(self, i):
-        i = i/20
-        self.x.append(i)
-        y = np.sin(2 * np.pi * (i - 0.01 * i)) + \
-            np.sin(2 * np.pi * (i+2 - 0.01 * i)) + \
-            np.sin(2 * np.pi * (i/2 - 0.01 * i))
-        self.y.append(y)
-        return i, y
+    def data_gen(self):
+        for cnt in itertools.count():
+            x = cnt / 20
+            y = np.sin(2 * np.pi * (x - 0.01 * x)) + \
+                np.sin(2 * np.pi * (x+2 - 0.01 * x)) + \
+                np.sin(2 * np.pi * (x/2 - 0.01 * x))
+            yield x, y
 
     @staticmethod
     def text_equation():
