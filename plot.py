@@ -1,16 +1,19 @@
 from matplotlib import pyplot as plt
 from equation import Equation
+import matplotlib as mpl
+from cycler import cycler
 
 
 class Plot:
 
     def __init__(self, eq=None):
+        mpl.rcParams['axes.prop_cycle'] = cycler(color=['r', 'm', 'b'])
         self.equation = eq if eq is not None else Equation()
-        self.fig = plt.Figure()
+        self.fig = plt.Figure(figsize=(8., 5.))
         self.ax = self.fig.add_subplot(111)
         self.ax.set(xlim=self.equation.xlim, ylim=self.equation.ylim)
         self.line, = self.ax.plot([], [], 'o-')
-        self.trace, = self.ax.plot([], [], '.-', lw=1, ms=2)
+        self.trace, = self.ax.plot([], [], '--', lw=1, ms=2)
 
     def animate(self, i):
         x, y = self.equation.update(i)
@@ -23,4 +26,4 @@ class Plot:
         self.equation = eq
         self.ax.set(xlim=self.equation.xlim, ylim=self.equation.ylim)
         self.line, = self.ax.plot([], [], 'o-')
-        self.trace, = self.ax.plot([], [], '.-', lw=1, ms=2)
+        self.trace, = self.ax.plot([], [], '--', lw=1, ms=2)

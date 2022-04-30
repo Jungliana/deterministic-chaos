@@ -28,7 +28,7 @@ class Equation:
 class Sine(Equation):
     def __init__(self):
         super().__init__()
-        self.xlim = (0, 2*np.pi)
+        self.xlim = (0, 4*np.pi)
         self.ylim = (-np.pi, np.pi)
 
     def data_gen(self):
@@ -46,7 +46,7 @@ class Sine(Equation):
 class TripleSine(Equation):
     def __init__(self):
         super().__init__()
-        self.xlim = (0, 2*np.pi)
+        self.xlim = (0, 4*np.pi)
         self.ylim = (-4, 4)
 
     def data_gen(self):
