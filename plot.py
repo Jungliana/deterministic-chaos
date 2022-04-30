@@ -15,3 +15,9 @@ class Plot:
         x, y = self.equation.update(i)
         self.line.set_data(x, y)
         return self.line
+
+    def new_equation(self, eq):
+        self.ax.clear()
+        self.equation = eq
+        self.ax.set(xlim=self.equation.xlim, ylim=self.equation.ylim)
+        self.line, = self.ax.plot(self.equation.x, self.equation.y)
