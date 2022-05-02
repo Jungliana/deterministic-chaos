@@ -10,6 +10,7 @@ class Equation:
         self.y = []
         self.xlim = (0, 10)
         self.ylim = (-10, 10)
+        self.params = dict()
 
     def data_gen(self):
         yield 0, 0
@@ -55,13 +56,15 @@ class TripleSine(Equation):
         super().__init__()
         self.xlim = (0, 4*np.pi)
         self.ylim = (-4, 4)
+        self.params = {"a": 2.,
+                       "b": 2.}
 
     def data_gen(self):
         for cnt in itertools.count():
             x = cnt / 20
             y = np.sin(2 * np.pi * (x - 0.01 * x)) + \
-                np.sin(2 * np.pi * (x+2 - 0.01 * x)) + \
-                np.sin(2 * np.pi * (x/2 - 0.01 * x))
+                np.sin(2 * np.pi * (x + self.params["a"] - 0.01 * x)) + \
+                np.sin(2 * np.pi * (x / self.params["b"] - 0.01 * x))
             yield x, y
 
     def __str__(self):
@@ -82,13 +85,15 @@ class LorenzSystem(Equation):
         self.xlim = (-22, 22)
         self.ylim = (-30, 30)
 
-        self.rho = 28.0         # 28.0
-        self.sigma = 10.0       # 10.0
-        self.beta = 8.0 / 5.0   # 8.0 / 3.0
+        self.params = {"rho": 28.0,         # 28.0
+                       "sigma": 10.0,       # 10.0
+                       "beta": 8.0 / 5.0}   # 8.0 / 3.0
 
     def derivatives(self, t, state):
         x, y, z = state
-        return self.sigma * (y - x), x * (self.rho - z) - y, x * y - self.beta * z  # Derivatives
+        return self.params["sigma"] * (y - x), \
+            x * (self.params["rho"] - z) - y, \
+            x * y - self.params["beta"] * z
 
     def data_gen(self):
         for cnt in itertools.count():
@@ -118,20 +123,20 @@ class LorenzSystem(Equation):
 class RosslerSystem(Equation):
     def __init__(self):
         super().__init__()
-        self.x = [0.1]
-        self.y = [0.2]
-        self.z = [0.1]
+        self.x = [0.0]
+        self.y = [0.0]
+        self.z = [0.0]
 
         self.xlim = (-15, 15)
         self.ylim = (-20, 10)
 
-        self.a = 0.2        # 0.2
-        self.b = 0.2        # 0.2
-        self.c = 5.7        # 5.7
+        self.params = {"a": 0.2,  # 0.2
+                       "b": 0.2,  # 0.2
+                       "c": 5.7}  # 5.7
 
     def derivatives(self, t, state):
         x, y, z = state
-        return -y - z, x + self.a * y, self.b + z * (x - self.c)  # Derivatives
+        return -y - z, x + self.params["a"] * y, self.params["b"] + z * (x - self.params["c"])
 
     def data_gen(self):
         for cnt in itertools.count():
@@ -167,14 +172,14 @@ class LotkaVolterra(Equation):
         self.xlim = (-1., 40.)
         self.ylim = (-1., 20.)
 
-        self.a = 1.1       # 1.1
-        self.b = 0.4       # 0.4
-        self.c = 0.1       # 0.1
-        self.d = 0.4       # 0.4
+        self.params = {"a": 1.1,  # 1.1
+                       "b": 0.4,  # 0.4
+                       "c": 0.1,  # 0.1
+                       "d": 0.4}  # 0.4
 
     def derivatives(self, t, state):
         x, y = state
-        return (self.a - self.b * y) * x, (self.c * x - self.d) * y
+        return (self.params["a"] - self.params["b"] * y) * x, (self.params["c"] * x - self.params["d"]) * y
 
     def data_gen(self):
         for cnt in itertools.count():
