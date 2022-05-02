@@ -3,7 +3,7 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from equation import Sine, TripleSine, LorenzSystem
+from equation import Sine, TripleSine, LorenzSystem, RosslerSystem, LotkaVolterra
 
 
 class Window:
@@ -42,7 +42,9 @@ class Window:
     def add_options_to_list(self):
         self.combobox['values'] = ("sin(x)",
                                    "triple sine",
-                                   "Lorenz system")
+                                   "Lorenz system",
+                                   "Rössler system",
+                                   "Lotka-Volterra equations")
 
     def bind_gui_elements(self):
         self.combobox.bind('<<ComboboxSelected>>', self.update_equation)
@@ -53,6 +55,10 @@ class Window:
             self.plot.new_equation(Sine())
         elif self.combobox.get() == "Lorenz system":
             self.plot.new_equation(LorenzSystem())
+        elif self.combobox.get() == "Rössler system":
+            self.plot.new_equation(RosslerSystem())
+        elif self.combobox.get() == "Lotka-Volterra equations":
+            self.plot.new_equation(LotkaVolterra())
         else:
             self.plot.new_equation(TripleSine())
         self.ani.frame_seq = self.plot.equation.data_gen()
