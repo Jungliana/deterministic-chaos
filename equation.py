@@ -12,6 +12,10 @@ class Equation:
         self.ylim = (-10, 10)
         self.params = dict()
 
+    def set_initial_conditions(self, x=None, y=None):
+        self.x = [x] if x else []
+        self.y = [y] if y else []
+
     def data_gen(self):
         yield 0, 0
 
@@ -89,6 +93,11 @@ class LorenzSystem(Equation):
                        "sigma": 10.0,       # 10.0
                        "beta": 8.0 / 5.0}   # 8.0 / 3.0
 
+    def set_initial_conditions(self, x=None, y=None, z=None):
+        self.x = [x] if x else [1.]
+        self.y = [y] if y else [1.]
+        self.z = [z] if z else [1.]
+
     def derivatives(self, t, state):
         x, y, z = state
         return self.params["sigma"] * (y - x), \
@@ -134,6 +143,11 @@ class RosslerSystem(Equation):
                        "b": 0.2,  # 0.2
                        "c": 5.7}  # 5.7
 
+    def set_initial_conditions(self, x=None, y=None, z=None):
+        self.x = [x] if x else [0.]
+        self.y = [y] if y else [0.]
+        self.z = [z] if z else [0.]
+
     def derivatives(self, t, state):
         x, y, z = state
         return -y - z, x + self.params["a"] * y, self.params["b"] + z * (x - self.params["c"])
@@ -176,6 +190,10 @@ class LotkaVolterra(Equation):
                        "b": 0.4,  # 0.4
                        "c": 0.1,  # 0.1
                        "d": 0.4}  # 0.4
+
+    def set_initial_conditions(self, x=None, y=None, z=None):
+        self.x = [x] if x else [10.]
+        self.y = [y] if y else [10.]
 
     def derivatives(self, t, state):
         x, y = state
