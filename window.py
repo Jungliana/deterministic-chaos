@@ -3,7 +3,7 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from equation import TripleSine, LorenzSystem, RosslerSystem, LotkaVolterra
+from equation import TripleSine, LorenzSystem, RosslerSystem, LotkaVolterra, ChenSystem
 
 
 class Window:
@@ -19,7 +19,7 @@ class Window:
         self.param_value = tk.Entry(self.root, width=10)
         self.apply = tk.Button(self.root, text=" apply ")
 
-        self.equation = tk.Label(self.root, text="Choose something")
+        self.equation = tk.Label(self.root, text="")
         self.pause = tk.Button(self.root, text=" pause ")
         self.paused = False
 
@@ -60,9 +60,10 @@ class Window:
         self.pause.grid(column=1, row=5)
 
     def add_options_to_list(self):
-        self.combobox['values'] = ("triple sine",
+        self.combobox['values'] = ("Triple sine",
                                    "Lorenz system",
                                    "Rössler system",
+                                   "Chen system",
                                    "Lotka-Volterra equations")
 
     def bind_gui_elements(self):
@@ -94,6 +95,8 @@ class Window:
     def update_equation(self, event):
         if self.combobox.get() == "Lorenz system":
             self.plot.new_equation(LorenzSystem())
+        elif self.combobox.get() == "Chen system":
+            self.plot.new_equation(ChenSystem())
         elif self.combobox.get() == "Rössler system":
             self.plot.new_equation(RosslerSystem())
         elif self.combobox.get() == "Lotka-Volterra equations":

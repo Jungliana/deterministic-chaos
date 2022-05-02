@@ -157,6 +157,56 @@ class RosslerSystem(Equation):
                "dz/dt = b + z(x - c)"
 
 
+class ChenSystem(Equation):
+    def __init__(self):
+        super().__init__()
+        self.x = [-0.1]
+        self.y = [0.5]
+        self.z = [-0.6]
+
+        self.xlim = (-25, 30)
+        self.ylim = (-30, 35)
+
+        self.params = {"a": 40.,  # 40.
+                       "b": 3.,   # 3.
+                       "c": 28.}  # 28.
+
+    def set_initial_conditions(self, x=None, y=None, z=None):
+        self.x = [x] if x else [-0.1]
+        self.y = [y] if y else [0.5]
+        self.z = [z] if z else [-0.6]
+
+    def derivatives(self, t, state):
+        x, y, z = state
+        return self.params["a"] * (y - x), \
+            (self.params["c"]-self.params["a"])*x - x*z + self.params["c"]*y,\
+            x * y - self.params["b"] * z
+
+    def data_gen(self):
+        for cnt in itertools.count():
+            i = cnt
+            state = [self.x[-1], self.y[-1], self.z[-1]]
+            sol = solve_ivp(self.derivatives, [i/50, (i+1)/50], state)
+            yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
+
+    def update(self, data):
+        x, y, z = data
+        self.x.append(x)
+        self.y.append(y)
+        self.z.append(z)
+        return x, y
+
+    def __str__(self):
+        return "Chen system"
+
+    @staticmethod
+    def text_equation():
+        return "Chen system:\n" \
+               "dx/dt = a(y - x)\n" \
+               "dy/dt = (c-a)x - xz + cy\n" \
+               "dz/dt = xy - bz"
+
+
 class LotkaVolterra(Equation):
     def __init__(self):
         super().__init__()
