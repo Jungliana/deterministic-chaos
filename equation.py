@@ -38,32 +38,6 @@ class Equation:
         return ""
 
 
-# example equation
-class TripleSine(Equation):
-    def __init__(self):
-        super().__init__()
-        self.xlim = (0, 4*np.pi)
-        self.ylim = (-4, 4)
-        self.params = {"a": 2.,
-                       "b": 2.}
-
-    def data_gen(self):
-        for cnt in itertools.count():
-            x = cnt / 20
-            y = np.sin(2 * np.pi * (x - 0.01 * x)) + \
-                np.sin(2 * np.pi * (x + self.params["a"] - 0.01 * x)) + \
-                np.sin(2 * np.pi * (x / self.params["b"] - 0.01 * x))
-            yield x, y
-
-    def __str__(self):
-        return "Triple sine wave"
-
-    @staticmethod
-    def text_equation():
-        return "Triple sine wave (example)\n" \
-               "sin(x) + sin(x+a) + sin(x/b)"
-
-
 class LorenzSystem(Equation):
     def __init__(self):
         super().__init__()
@@ -96,13 +70,6 @@ class LorenzSystem(Equation):
             state = [self.x[-1], self.y[-1], self.z[-1]]
             sol = solve_ivp(self.derivatives, [i/40, (i+1)/40], state)
             yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
-
-    def update(self, data):
-        x, y, z = data
-        self.x.append(x)
-        self.y.append(y)
-        self.z.append(z)
-        return x, y, z
 
     def __str__(self):
         return "Lorenz system"
@@ -144,13 +111,6 @@ class RosslerSystem(Equation):
             state = [self.x[-1], self.y[-1], self.z[-1]]
             sol = solve_ivp(self.derivatives, [i/5, (i+1)/5], state)
             yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
-
-    # def update(self, data):
-    #     x, y, z = data
-    #     self.x.append(x)
-    #     self.y.append(y)
-    #     self.z.append(z)
-    #     return x, y
 
     def __str__(self):
         return "Rössler system"
@@ -195,13 +155,6 @@ class ChenSystem(Equation):
             sol = solve_ivp(self.derivatives, [i/50, (i+1)/50], state)
             yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
 
-    # def update(self, data):
-    #     x, y, z = data
-    #     self.x.append(x)
-    #     self.y.append(y)
-    #     self.z.append(z)
-    #     return x, y
-
     def __str__(self):
         return "Chen system"
 
@@ -211,44 +164,3 @@ class ChenSystem(Equation):
                "dx/dt = a(y - x)\n" \
                "dy/dt = (c-a)x - xz + cy\n" \
                "dz/dt = xy - bz"
-
-
-class LotkaVolterra(Equation):
-    def __init__(self):
-        super().__init__()
-        self.x = [10.]
-        self.y = [10.]
-
-        self.xlim = (-1., 40.)
-        self.ylim = (-1., 20.)
-
-        self.params = {"a": 1.1,  # 1.1
-                       "b": 0.4,  # 0.4
-                       "c": 0.1,  # 0.1
-                       "d": 0.4}  # 0.4
-
-    def set_initial_conditions(self, x=None, y=None, z=None):
-        self.x = [x] if x else [10.]
-        self.y = [y] if y else [10.]
-
-    def derivatives(self, t, state):
-        x, y = state
-        return (self.params["a"] - self.params["b"] * y) * x, (self.params["c"] * x - self.params["d"]) * y
-
-    def data_gen(self):
-        for cnt in itertools.count():
-            i = cnt
-            state = [self.x[-1], self.y[-1]]
-            sol = solve_ivp(self.derivatives, [i/10, (i+1)/10], state)
-            yield sol.y[0, 1], sol.y[1, 1]
-
-    def __str__(self):
-        return "Lotka-Volterra equations"
-
-    @staticmethod
-    def text_equation():
-        return "Lotka-Volterra equations:\n" \
-               "dx/dt = (a - by)x\n" \
-               "dy/dt = (cx - d)y\n\n" \
-               "x - prey population size\n" \
-               "y - predator population size"
