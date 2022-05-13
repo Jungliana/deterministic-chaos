@@ -1,9 +1,7 @@
-import numpy as np
 import itertools
 from scipy.integrate import solve_ivp
 
 
-# parent equation class
 class Equation:
     def __init__(self):
         self.x = []
@@ -47,7 +45,7 @@ class LorenzSystem(Equation):
 
         self.xlim = (-22, 22)
         self.ylim = (-30, 30)
-        self.zlim = (-30, 30)
+        self.zlim = (-5, 50)
 
         self.params = {"rho": 28.0,         # 28.0
                        "sigma": 10.0,       # 10.0
@@ -91,6 +89,7 @@ class RosslerSystem(Equation):
 
         self.xlim = (-15, 15)
         self.ylim = (-20, 10)
+        self.zlim = (-3, 25)
 
         self.params = {"a": 0.2,  # 0.2
                        "b": 0.2,  # 0.2
@@ -132,6 +131,7 @@ class ChenSystem(Equation):
 
         self.xlim = (-25, 30)
         self.ylim = (-30, 35)
+        self.zlim = (-10, 45)
 
         self.params = {"a": 40.,  # 40.
                        "b": 3.,   # 3.

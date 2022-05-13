@@ -74,6 +74,7 @@ class Window:
         self.apply.bind('<Button>', self.apply_param_value)
         self.pause.bind('<Button>', self.pause_simulation)
         self.right.bind('<Button>', self.next_axes)
+        self.left.bind('<Button>', self.prev_axes)
 
     def load_param_dict(self):
         params = list(self.plot.equation.params.keys())
@@ -107,7 +108,14 @@ class Window:
         self.equation.config(text=self.plot.equation.text_equation())
 
     def next_axes(self, event):
-        self.plot.equation.axes = (self.plot.equation.axes + 1) % 3
+        next_a = (self.plot.equation.axes + 1) % 3
+        self.plot.equation.axes = next_a
+        self.plot.change_axes(next_a)
+
+    def prev_axes(self, event):
+        prev_a = (self.plot.equation.axes - 1) % 3
+        self.plot.equation.axes = prev_a
+        self.plot.change_axes(prev_a)
 
     def pause_simulation(self, event):
         if not self.paused:

@@ -21,6 +21,20 @@ class Plot:
         self.ax.set_ylabel('y')
         self.ax.set_xlabel('x')
 
+    def change_axes(self, next_a=0):
+        if next_a == 0:
+            self.ax.set(xlim=self.equation.xlim, ylim=self.equation.ylim)
+            self.ax.set_ylabel('y')
+            self.ax.set_xlabel('x')
+        elif next_a == 1:
+            self.ax.set(xlim=self.equation.ylim, ylim=self.equation.zlim)
+            self.ax.set_ylabel('z')
+            self.ax.set_xlabel('y')
+        else:
+            self.ax.set(xlim=self.equation.xlim, ylim=self.equation.zlim)
+            self.ax.set_ylabel('z')
+            self.ax.set_xlabel('x')
+
     def animate(self, i):
         x, y, z = self.equation.update(i)
         if self.equation.axes == 0:
