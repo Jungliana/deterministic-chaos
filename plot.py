@@ -22,9 +22,16 @@ class Plot:
         self.ax.set_xlabel('x')
 
     def animate(self, i):
-        x, y = self.equation.update(i)
-        self.line.set_data(x, y)
-        self.trace.set_data(self.equation.x, self.equation.y)
+        x, y, z = self.equation.update(i)
+        if self.equation.axes == 0:
+            self.line.set_data(x, y)
+            self.trace.set_data(self.equation.x, self.equation.y)
+        elif self.equation.axes == 1:
+            self.line.set_data(y, z)
+            self.trace.set_data(self.equation.y, self.equation.z)
+        else:
+            self.line.set_data(x, z)
+            self.trace.set_data(self.equation.x, self.equation.z)
         return self.line,
 
     def new_equation(self, eq):

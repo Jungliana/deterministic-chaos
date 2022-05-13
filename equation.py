@@ -8,22 +8,27 @@ class Equation:
     def __init__(self):
         self.x = []
         self.y = []
+        self.z = []
+        self.axes = 0
         self.xlim = (0, 10)
         self.ylim = (-10, 10)
+        self.zlim = (-10, 10)
         self.params = dict()
 
-    def set_initial_conditions(self, x=None, y=None):
+    def set_initial_conditions(self, x=None, y=None, z=None):
         self.x = [x] if x else []
         self.y = [y] if y else []
+        self.z = [z] if z else []
 
     def data_gen(self):
-        yield 0, 0
+        yield 0, 0, 0
 
     def update(self, data):
-        x, y = data
+        x, y, z = data
         self.x.append(x)
         self.y.append(y)
-        return x, y
+        self.z.append(z)
+        return x, y, z
 
     def __str__(self):
         return "Equation"
@@ -68,6 +73,7 @@ class LorenzSystem(Equation):
 
         self.xlim = (-22, 22)
         self.ylim = (-30, 30)
+        self.zlim = (-30, 30)
 
         self.params = {"rho": 28.0,         # 28.0
                        "sigma": 10.0,       # 10.0
@@ -96,7 +102,7 @@ class LorenzSystem(Equation):
         self.x.append(x)
         self.y.append(y)
         self.z.append(z)
-        return x, y
+        return x, y, z
 
     def __str__(self):
         return "Lorenz system"
@@ -139,12 +145,12 @@ class RosslerSystem(Equation):
             sol = solve_ivp(self.derivatives, [i/5, (i+1)/5], state)
             yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
 
-    def update(self, data):
-        x, y, z = data
-        self.x.append(x)
-        self.y.append(y)
-        self.z.append(z)
-        return x, y
+    # def update(self, data):
+    #     x, y, z = data
+    #     self.x.append(x)
+    #     self.y.append(y)
+    #     self.z.append(z)
+    #     return x, y
 
     def __str__(self):
         return "Rössler system"
@@ -189,12 +195,12 @@ class ChenSystem(Equation):
             sol = solve_ivp(self.derivatives, [i/50, (i+1)/50], state)
             yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
 
-    def update(self, data):
-        x, y, z = data
-        self.x.append(x)
-        self.y.append(y)
-        self.z.append(z)
-        return x, y
+    # def update(self, data):
+    #     x, y, z = data
+    #     self.x.append(x)
+    #     self.y.append(y)
+    #     self.z.append(z)
+    #     return x, y
 
     def __str__(self):
         return "Chen system"

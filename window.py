@@ -20,6 +20,8 @@ class Window:
         self.apply = tk.Button(self.root, text=" apply ")
 
         self.equation = tk.Label(self.root, text="")
+        self.left = tk.Button(self.root, text=" < ")
+        self.right = tk.Button(self.root, text=" > ")
         self.pause = tk.Button(self.root, text=" pause ")
         self.paused = False
 
@@ -57,10 +59,12 @@ class Window:
         self.param_value.grid(column=2, row=3)
         self.apply.grid(column=3, row=3)
         self.equation.grid(column=1, columnspan=3, row=4)
-        self.pause.grid(column=1, row=5)
+        self.left.grid(column=1, row=5, sticky='E')
+        self.right.grid(column=2, row=5, sticky='W')
+        self.pause.grid(column=3, row=5)
 
     def add_options_to_list(self):
-        self.combobox['values'] = ("Triple sine",
+        self.combobox['values'] = (#"Triple sine",
                                    "Lorenz system",
                                    "Rössler system",
                                    "Chen system",
@@ -71,6 +75,7 @@ class Window:
         self.param_combo.bind('<<ComboboxSelected>>', self.update_entry_param)
         self.apply.bind('<Button>', self.apply_param_value)
         self.pause.bind('<Button>', self.pause_simulation)
+        self.right.bind('<Button>', self.next_axes)
 
     def load_param_dict(self):
         params = list(self.plot.equation.params.keys())
@@ -106,6 +111,9 @@ class Window:
         self.ani.frame_seq = self.plot.equation.data_gen()
         self.load_param_dict()
         self.equation.config(text=self.plot.equation.text_equation())
+
+    def next_axes(self, event):
+        self.plot.equation.axes = (self.plot.equation.axes + 1) % 3
 
     def pause_simulation(self, event):
         if not self.paused:
