@@ -1,4 +1,5 @@
 import itertools
+import numpy as np
 from scipy.integrate import solve_ivp
 
 
@@ -164,3 +165,45 @@ class ChenSystem(Equation):
                "dx/dt = a(y - x)\n" \
                "dy/dt = (c-a)x - xz + cy\n" \
                "dz/dt = xy - bz"
+
+
+class ThomasSystem(Equation):
+    def __init__(self):
+        super().__init__()
+        self.x = [1.1]
+        self.y = [1.1]
+        self.z = [-0.01]
+
+        self.xlim = (-3, 5)
+        self.ylim = (-3, 5)
+        self.zlim = (-3, 5)
+
+        self.params = {"b": 0.208186}
+
+    def set_initial_conditions(self, x=None, y=None, z=None):
+        self.x = [x] if x else [1.1]
+        self.y = [y] if y else [1.1]
+        self.z = [z] if z else [-0.01]
+
+    def derivatives(self, t, state):
+        x, y, z = state
+        return np.sin(y) - self.params["b"] * x, \
+            np.sin(z) - self.params["b"] * y,\
+            np.sin(x) - self.params["b"] * z
+
+    def data_gen(self):
+        for cnt in itertools.count():
+            i = cnt
+            state = [self.x[-1], self.y[-1], self.z[-1]]
+            sol = solve_ivp(self.derivatives, [i, (i+1)], state)
+            yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
+
+    def __str__(self):
+        return "Thomas system"
+
+    @staticmethod
+    def text_equation():
+        return "Thomas system:\n" \
+               "dx/dt = sin(y) - bx\n" \
+               "dy/dt = sin(z) - by\n" \
+               "dz/dt = sin(x) - bz"

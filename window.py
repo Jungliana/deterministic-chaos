@@ -9,25 +9,29 @@ import equation
 class Window:
     def __init__(self, plot):
         self.plot = plot
-        self.root = ThemedTk(theme='scidpurple')
-        self.label = tk.Label(self.root, text="Deterministic chaos")
+        self.root = ThemedTk(theme='breeze')
+        self.label = ttk.Label(self.root, text="Deterministic chaos")
         self.canvas = FigureCanvasTkAgg(plot.fig, master=self.root)
 
         self.combobox = ttk.Combobox(self.root, width=34)
-        self.initial_cond_label = tk.Label(self.root, text="Change initial conditions:")
-        self.x_slider = tk.Scale(self.root, length=200, sliderlength=20, from_=-2., to=2., resolution=0.1, orient="horizontal")
-        self.y_slider = tk.Scale(self.root, length=200, sliderlength=20, from_=-2., to=2., resolution=0.1, orient="horizontal")
-        self.z_slider = tk.Scale(self.root, length=200, sliderlength=20, from_=-2., to=2., resolution=0.1, orient="horizontal")
+        self.equation_label = ttk.Label(self.root, text="")
+        self.initial_cond_label = ttk.Label(self.root, text="Change initial conditions:")
+        self.x_slider = tk.Scale(self.root, length=250, sliderlength=20, from_=-2., to=2.,
+                                 resolution=0.05, tickinterval=1., orient="horizontal")
+        self.y_slider = tk.Scale(self.root, length=250, sliderlength=20, from_=-2., to=2.,
+                                 resolution=0.05, tickinterval=1., orient="horizontal")
+        self.z_slider = tk.Scale(self.root, length=250, sliderlength=20, from_=-2., to=2.,
+                                 resolution=0.05, tickinterval=1., orient="horizontal")
 
-        self.param_label = tk.Label(self.root, text="Choose a parameter to change:")
+        self.param_label = ttk.Label(self.root, text="Choose a parameter to change:")
         self.param_combo = ttk.Combobox(self.root, width=8)
-        self.param_value = tk.Entry(self.root, width=10)
-        self.apply = tk.Button(self.root, text=" apply ")
+        self.param_value = ttk.Entry(self.root, width=10)
+        self.apply = ttk.Button(self.root, text=" apply ", width=8)
 
-        self.equation_label = tk.Label(self.root, text="")
-        self.left = tk.Button(self.root, text=" < ")
-        self.right = tk.Button(self.root, text=" > ")
-        self.pause = tk.Button(self.root, text=" pause ")
+        self.left = ttk.Button(self.root, text=" < ", width=7)
+        self.right = ttk.Button(self.root, text=" > ", width=7)
+        self.reset = ttk.Button(self.root, text=" reset ", width=7)
+        self.pause = ttk.Button(self.root, text=" pause ", width=7)
         self.paused = False
 
         self.set_window_geometry()
@@ -44,13 +48,12 @@ class Window:
         width = self.root.winfo_screenwidth()
         height = self.root.winfo_screenheight()
         self.root.geometry("%dx%d" % (width, height))
-        self.root.title("Chaos")
+        self.root.title("Deterministic chaos")
 
     def beautify(self):
         unified_font = ("Consolas", 14)
-        button_font = ("Consolas", 12)
 
-        self.root['padx'] = 20
+        self.root['padx'] = 10
         self.root['background'] = 'white'
         self.label['background'] = 'white'
         self.label['font'] = unified_font
@@ -60,31 +63,33 @@ class Window:
         self.equation_label['font'] = unified_font
         self.param_label['background'] = 'white'
         self.param_label['font'] = unified_font
-        self.combobox['font'] = button_font
-        self.pause['font'] = button_font
-        self.apply['font'] = button_font
+        self.x_slider['background'] = 'white'
+        self.y_slider['background'] = 'white'
+        self.z_slider['background'] = 'white'
 
     def place_components(self):
         self.label.grid(column=0, row=0)
         self.canvas.get_tk_widget().grid(column=0, row=1, rowspan=10)
-        self.combobox.grid(column=1, columnspan=3, row=1)
-        self.initial_cond_label.grid(column=1, columnspan=3, row=2, sticky='S')
-        self.x_slider.grid(column=1, columnspan=3, row=4)
-        self.y_slider.grid(column=1, columnspan=3, row=5)
-        self.z_slider.grid(column=1, columnspan=3, row=6)
-        self.param_label.grid(column=1, columnspan=3, row=7, sticky='S')
-        self.param_combo.grid(column=1, row=8)
-        self.param_value.grid(column=2, row=8)
-        self.apply.grid(column=3, row=8)
-        self.equation_label.grid(column=1, columnspan=3, row=9)
-        self.left.grid(column=1, row=10, sticky='E')
-        self.right.grid(column=2, row=10, sticky='W')
-        self.pause.grid(column=3, row=10)
+        self.combobox.grid(column=1, columnspan=4, row=1)
+        self.equation_label.grid(column=1, columnspan=4, row=2)
+        self.initial_cond_label.grid(column=1, columnspan=4, row=3, sticky='S')
+        self.x_slider.grid(column=1, columnspan=4, row=4)
+        self.y_slider.grid(column=1, columnspan=4, row=5)
+        self.z_slider.grid(column=1, columnspan=4, row=6)
+        self.param_label.grid(column=1, columnspan=4, row=7, sticky='S')
+        self.param_combo.grid(column=1, row=8, sticky='E')
+        self.param_value.grid(column=2, row=8, columnspan=2)
+        self.apply.grid(column=4, row=8)
+        self.left.grid(column=2, row=9)
+        self.right.grid(column=3, row=9)
+        self.reset.grid(column=4, row=9)
+        self.pause.grid(column=1, row=9)
 
     def add_options_to_list(self):
         self.combobox['values'] = ("Lorenz system",
                                    "Rössler system",
-                                   "Chen system")
+                                   "Chen system",
+                                   "Thomas system")
 
     def bind_gui_elements(self):
         self.combobox.bind('<<ComboboxSelected>>', self.update_equation)
@@ -93,6 +98,7 @@ class Window:
         self.y_slider.bind("<ButtonRelease-1>", self.apply_changes)
         self.z_slider.bind("<ButtonRelease-1>", self.apply_changes)
         self.apply.bind('<Button>', self.apply_param_value)
+        self.reset.bind('<Button>', self.update_equation)
         self.pause.bind('<Button>', self.pause_simulation)
         self.right.bind('<Button>', self.next_axes)
         self.left.bind('<Button>', self.prev_axes)
@@ -132,6 +138,8 @@ class Window:
             self.plot.new_equation(equation.LorenzSystem())
         elif self.combobox.get() == "Chen system":
             self.plot.new_equation(equation.ChenSystem())
+        elif self.combobox.get() == "Thomas system":
+            self.plot.new_equation(equation.ThomasSystem())
         else:
             self.plot.new_equation(equation.RosslerSystem())
         self.ani.frame_seq = self.plot.equation.data_gen()
