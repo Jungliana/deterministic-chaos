@@ -15,9 +15,9 @@ class Window:
 
         self.combobox = ttk.Combobox(self.root, width=34)
         self.initial_cond_label = tk.Label(self.root, text="Change initial conditions:")
-        self.x_slider = tk.Scale(self.root, length=200, sliderlength=20, orient="horizontal")
-        self.y_slider = tk.Scale(self.root, length=200, sliderlength=20, orient="horizontal")
-        self.z_slider = tk.Scale(self.root, length=200, sliderlength=20, orient="horizontal")
+        self.x_slider = tk.Scale(self.root, length=200, sliderlength=20, from_=-2., to=2., resolution=0.1, orient="horizontal")
+        self.y_slider = tk.Scale(self.root, length=200, sliderlength=20, from_=-2., to=2., resolution=0.1, orient="horizontal")
+        self.z_slider = tk.Scale(self.root, length=200, sliderlength=20, from_=-2., to=2., resolution=0.1, orient="horizontal")
 
         self.param_label = tk.Label(self.root, text="Choose a parameter to change:")
         self.param_combo = ttk.Combobox(self.root, width=8)
@@ -89,10 +89,18 @@ class Window:
     def bind_gui_elements(self):
         self.combobox.bind('<<ComboboxSelected>>', self.update_equation)
         self.param_combo.bind('<<ComboboxSelected>>', self.update_entry_param)
+        self.x_slider.bind("<ButtonRelease-1>", self.apply_changes)
+        self.y_slider.bind("<ButtonRelease-1>", self.apply_changes)
+        self.z_slider.bind("<ButtonRelease-1>", self.apply_changes)
         self.apply.bind('<Button>', self.apply_param_value)
         self.pause.bind('<Button>', self.pause_simulation)
         self.right.bind('<Button>', self.next_axes)
         self.left.bind('<Button>', self.prev_axes)
+
+    def set_sliders(self):
+        self.x_slider.set(self.plot.equation.x[0])
+        self.y_slider.set(self.plot.equation.y[0])
+        self.z_slider.set(self.plot.equation.z[0])
 
     def load_param_dict(self):
         params = list(self.plot.equation.params.keys())
@@ -111,8 +119,13 @@ class Window:
             except ValueError as e:
                 return
             self.plot.equation.params[self.param_combo.get()] = new_param
-            self.plot.equation.set_initial_conditions()
-            self.ani.frame_seq = self.plot.equation.data_gen()
+            self.apply_changes()
+
+    def apply_changes(self, event=None):
+        self.plot.equation.set_initial_conditions(self.x_slider.get(),
+                                                  self.y_slider.get(),
+                                                  self.z_slider.get())
+        self.ani.frame_seq = self.plot.equation.data_gen()
 
     def update_equation(self, event):
         if self.combobox.get() == "Lorenz system":
@@ -122,6 +135,7 @@ class Window:
         else:
             self.plot.new_equation(equation.RosslerSystem())
         self.ani.frame_seq = self.plot.equation.data_gen()
+        self.set_sliders()
         self.load_param_dict()
         self.equation_label.config(text=self.plot.equation.text_equation())
 

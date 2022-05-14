@@ -4,19 +4,19 @@ from scipy.integrate import solve_ivp
 
 class Equation:
     def __init__(self):
-        self.x = []
-        self.y = []
-        self.z = []
+        self.x = [0]
+        self.y = [0]
+        self.z = [0]
         self.axes = 0
-        self.xlim = (0, 10)
+        self.xlim = (-10, 10)
         self.ylim = (-10, 10)
         self.zlim = (-10, 10)
         self.params = dict()
 
     def set_initial_conditions(self, x=None, y=None, z=None):
-        self.x = [x] if x else []
-        self.y = [y] if y else []
-        self.z = [z] if z else []
+        self.x = [x] if x else [0]
+        self.y = [y] if y else [0]
+        self.z = [z] if z else [0]
 
     def data_gen(self):
         yield 0, 0, 0
@@ -45,7 +45,7 @@ class LorenzSystem(Equation):
 
         self.xlim = (-22, 22)
         self.ylim = (-30, 30)
-        self.zlim = (-5, 50)
+        self.zlim = (-5, 55)
 
         self.params = {"rho": 28.0,         # 28.0
                        "sigma": 10.0,       # 10.0
