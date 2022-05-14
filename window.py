@@ -14,17 +14,23 @@ class Window:
         self.canvas = FigureCanvasTkAgg(plot.fig, master=self.root)
 
         self.combobox = ttk.Combobox(self.root, width=34)
+        self.initial_cond_label = tk.Label(self.root, text="Change initial conditions:")
+        self.x_slider = tk.Scale(self.root, length=200, sliderlength=20, orient="horizontal")
+        self.y_slider = tk.Scale(self.root, length=200, sliderlength=20, orient="horizontal")
+        self.z_slider = tk.Scale(self.root, length=200, sliderlength=20, orient="horizontal")
+
         self.param_label = tk.Label(self.root, text="Choose a parameter to change:")
         self.param_combo = ttk.Combobox(self.root, width=8)
         self.param_value = tk.Entry(self.root, width=10)
         self.apply = tk.Button(self.root, text=" apply ")
 
-        self.equation = tk.Label(self.root, text="")
+        self.equation_label = tk.Label(self.root, text="")
         self.left = tk.Button(self.root, text=" < ")
         self.right = tk.Button(self.root, text=" > ")
         self.pause = tk.Button(self.root, text=" pause ")
         self.paused = False
 
+        self.set_window_geometry()
         self.add_options_to_list()
         self.place_components()
         self.bind_gui_elements()
@@ -34,6 +40,12 @@ class Window:
                                            frames=self.plot.equation.data_gen,
                                            interval=20, blit=False, cache_frame_data=False)
 
+    def set_window_geometry(self):
+        width = self.root.winfo_screenwidth()
+        height = self.root.winfo_screenheight()
+        self.root.geometry("%dx%d" % (width, height))
+        self.root.title("Chaos")
+
     def beautify(self):
         unified_font = ("Consolas", 14)
         button_font = ("Consolas", 12)
@@ -42,8 +54,10 @@ class Window:
         self.root['background'] = 'white'
         self.label['background'] = 'white'
         self.label['font'] = unified_font
-        self.equation['background'] = 'white'
-        self.equation['font'] = unified_font
+        self.initial_cond_label['background'] = 'white'
+        self.initial_cond_label['font'] = unified_font
+        self.equation_label['background'] = 'white'
+        self.equation_label['font'] = unified_font
         self.param_label['background'] = 'white'
         self.param_label['font'] = unified_font
         self.combobox['font'] = button_font
@@ -52,16 +66,20 @@ class Window:
 
     def place_components(self):
         self.label.grid(column=0, row=0)
-        self.canvas.get_tk_widget().grid(column=0, row=1, rowspan=5)
+        self.canvas.get_tk_widget().grid(column=0, row=1, rowspan=10)
         self.combobox.grid(column=1, columnspan=3, row=1)
-        self.param_label.grid(column=1, columnspan=3, row=2, sticky='S')
-        self.param_combo.grid(column=1, row=3)
-        self.param_value.grid(column=2, row=3)
-        self.apply.grid(column=3, row=3)
-        self.equation.grid(column=1, columnspan=3, row=4)
-        self.left.grid(column=1, row=5, sticky='E')
-        self.right.grid(column=2, row=5, sticky='W')
-        self.pause.grid(column=3, row=5)
+        self.initial_cond_label.grid(column=1, columnspan=3, row=2, sticky='S')
+        self.x_slider.grid(column=1, columnspan=3, row=4)
+        self.y_slider.grid(column=1, columnspan=3, row=5)
+        self.z_slider.grid(column=1, columnspan=3, row=6)
+        self.param_label.grid(column=1, columnspan=3, row=7, sticky='S')
+        self.param_combo.grid(column=1, row=8)
+        self.param_value.grid(column=2, row=8)
+        self.apply.grid(column=3, row=8)
+        self.equation_label.grid(column=1, columnspan=3, row=9)
+        self.left.grid(column=1, row=10, sticky='E')
+        self.right.grid(column=2, row=10, sticky='W')
+        self.pause.grid(column=3, row=10)
 
     def add_options_to_list(self):
         self.combobox['values'] = ("Lorenz system",
@@ -105,7 +123,7 @@ class Window:
             self.plot.new_equation(equation.RosslerSystem())
         self.ani.frame_seq = self.plot.equation.data_gen()
         self.load_param_dict()
-        self.equation.config(text=self.plot.equation.text_equation())
+        self.equation_label.config(text=self.plot.equation.text_equation())
 
     def next_axes(self, event):
         next_a = (self.plot.equation.axes + 1) % 3
