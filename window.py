@@ -128,10 +128,25 @@ class Window:
             self.apply_changes()
 
     def apply_changes(self, event=None):
+        self.plot.last_x = self.plot.equation.x
+        self.plot.last_y = self.plot.equation.y
+        self.plot.last_z = self.plot.equation.z
+        self.plot_shadow()
         self.plot.equation.set_initial_conditions(self.x_slider.get(),
                                                   self.y_slider.get(),
                                                   self.z_slider.get())
         self.ani.frame_seq = self.plot.equation.data_gen()
+
+    def plot_shadow(self):
+        line = self.plot.shadow.pop(0)
+        line.remove()
+        axes_to_draw = self.plot.equation.axes
+        if axes_to_draw == 0:
+            self.plot.shadow = self.plot.ax.plot(self.plot.last_x, self.plot.last_y, 'k-', alpha=0.15)
+        elif axes_to_draw == 1:
+            self.plot.shadow = self.plot.ax.plot(self.plot.last_y, self.plot.last_z, 'k-', alpha=0.15)
+        else:
+            self.plot.shadow = self.plot.ax.plot(self.plot.last_x, self.plot.last_z, 'k-', alpha=0.15)
 
     def update_equation(self, event):
         if self.combobox.get() == "Lorenz system":
@@ -151,11 +166,13 @@ class Window:
         next_a = (self.plot.equation.axes + 1) % 3
         self.plot.equation.axes = next_a
         self.plot.change_axes(next_a)
+        self.plot_shadow()
 
     def prev_axes(self, event):
         prev_a = (self.plot.equation.axes - 1) % 3
         self.plot.equation.axes = prev_a
         self.plot.change_axes(prev_a)
+        self.plot_shadow()
 
     def pause_simulation(self, event):
         if not self.paused:

@@ -7,10 +7,11 @@ from cycler import cycler
 class Plot:
 
     def __init__(self, eq=None):
-        mpl.rcParams['axes.prop_cycle'] = cycler(color=['b', 'm', 'r'])
+        mpl.rcParams['axes.prop_cycle'] = cycler(color=['b', 'm', 'k'])
         self.equation = eq if eq is not None else Equation()
         self.fig = plt.Figure(figsize=(8.5, 6.))
         self.ax = self.fig.add_subplot(111)
+        self.shadow = self.ax.plot([], [], '.-')
         self.prepare_plot()
 
     def prepare_plot(self):
@@ -20,6 +21,10 @@ class Plot:
         self.ax.set_title(self.equation.__str__())
         self.ax.set_ylabel('y')
         self.ax.set_xlabel('x')
+
+        self.last_x = self.equation.x
+        self.last_y = self.equation.y
+        self.last_z = self.equation.z
 
     def change_axes(self, next_a=0):
         if next_a == 0:

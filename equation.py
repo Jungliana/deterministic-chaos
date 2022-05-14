@@ -174,9 +174,9 @@ class ThomasSystem(Equation):
         self.y = [1.1]
         self.z = [-0.01]
 
-        self.xlim = (-3, 5)
-        self.ylim = (-3, 5)
-        self.zlim = (-3, 5)
+        self.xlim = (-5, 5)
+        self.ylim = (-5, 5)
+        self.zlim = (-5, 5)
 
         self.params = {"b": 0.208186}
 
