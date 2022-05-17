@@ -114,15 +114,15 @@ class Window:
         self.param_combo.set('')
         self.param_value.delete(0, len(self.param_value.get()))
 
-    def update_entry_param(self, event):
+    def update_entry_param(self, _):
         self.param_value.delete(0, len(self.param_value.get()))
         self.param_value.insert(0, str(self.plot.equation.params[self.param_combo.get()]))
 
-    def apply_param_value(self, event):
+    def apply_param_value(self, _):
         if self.param_combo.get() in self.plot.equation.params.keys():
             try:
                 new_param = float(self.param_value.get())
-            except ValueError as e:
+            except ValueError:
                 return
             self.plot.equation.params[self.param_combo.get()] = new_param
             self.apply_changes()
@@ -148,7 +148,7 @@ class Window:
         else:
             self.plot.shadow = self.plot.ax.plot(self.plot.last_x, self.plot.last_z, 'k-', alpha=0.15)
 
-    def update_equation(self, event):
+    def update_equation(self, event=None):
         if self.combobox.get() == "Lorenz system":
             self.plot.new_equation(equation.LorenzSystem())
         elif self.combobox.get() == "Chen system":
@@ -162,19 +162,19 @@ class Window:
         self.load_param_dict()
         self.equation_label.config(text=self.plot.equation.text_equation())
 
-    def next_axes(self, event):
+    def next_axes(self, _):
         next_a = (self.plot.equation.axes + 1) % 3
         self.plot.equation.axes = next_a
         self.plot.change_axes(next_a)
         self.plot_shadow()
 
-    def prev_axes(self, event):
+    def prev_axes(self, _):
         prev_a = (self.plot.equation.axes - 1) % 3
         self.plot.equation.axes = prev_a
         self.plot.change_axes(prev_a)
         self.plot_shadow()
 
-    def pause_simulation(self, event):
+    def pause_simulation(self, _):
         if not self.paused:
             self.ani.pause()
             self.paused = True
