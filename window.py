@@ -89,7 +89,8 @@ class Window:
         self.combobox['values'] = ("Lorenz system",
                                    "Rössler system",
                                    "Chen system",
-                                   "Thomas system")
+                                   "Thomas system",
+                                   "Aizawa system")
 
     def bind_gui_elements(self):
         self.combobox.bind('<<ComboboxSelected>>', self.update_equation)
@@ -155,6 +156,8 @@ class Window:
             self.plot.new_equation(equation.ChenSystem())
         elif self.combobox.get() == "Thomas system":
             self.plot.new_equation(equation.ThomasSystem())
+        elif self.combobox.get() == "Aizawa system":
+            self.plot.new_equation(equation.AizawaSystem())
         else:
             self.plot.new_equation(equation.RosslerSystem())
         self.ani.frame_seq = self.plot.equation.data_gen()

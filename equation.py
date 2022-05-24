@@ -207,3 +207,52 @@ class ThomasSystem(Equation):
                "dx/dt = sin(y) - bx\n" \
                "dy/dt = sin(z) - by\n" \
                "dz/dt = sin(x) - bz"
+
+
+class AizawaSystem(Equation):
+    def __init__(self):
+        super().__init__()
+        self.x = [0.1]
+        self.y = [1.00]
+        self.z = [0.01]
+
+        self.xlim = (-2.5, 2.5)
+        self.ylim = (-2.5, 2.5)
+        self.zlim = (-2.5, 2.5)
+
+        self.params = {"a": 0.95,
+                       "b": 0.7,
+                       "c": 0.6,
+                       "d": 3.5,
+                       "e": 0.25,
+                       "f": 0.1}
+
+    def set_initial_conditions(self, x=None, y=None, z=None):
+        self.x = [x] if x else [0.1]
+        self.y = [y] if y else [1.00]
+        self.z = [z] if z else [0.01]
+
+    def derivatives(self, t, state):
+        x, y, z = state
+        return (z - self.params["b"]) * x - self.params["d"] * y,\
+            self.params["d"] * x + (z - self.params["b"]) * y,\
+            self.params["c"] + self.params["a"]*z - z**3 / 3 \
+            - (x*x + y*y) * (1 + self.params["e"]*z) + self.params["f"]*z * x**3
+
+    def data_gen(self):
+        for cnt in itertools.count():
+            i = cnt
+            state = [self.x[-1], self.y[-1], self.z[-1]]
+            sol = solve_ivp(self.derivatives, [i, (i+1)], state)
+            yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
+
+    def __str__(self):
+        return "Aizawa system"
+
+    @staticmethod
+    def text_equation():
+        return "Aizawa system:\n" \
+               "dx/dt = (z-b)x - dy\n" \
+               "dy/dt = dx + (z-b)y\n" \
+               "dz/dt = c + az - (z^3)/3 -\n"\
+               " -(x^2 + y^2)(1+ez) + fzx^3"
