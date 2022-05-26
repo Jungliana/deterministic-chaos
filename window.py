@@ -156,6 +156,8 @@ class Window:
     def update_equation(self, event=None):
         if self.combobox.get() == "Lorenz system":
             self.plot.new_equation(equation.LorenzSystem())
+        elif self.combobox.get() == "Rössler system":
+            self.plot.new_equation(equation.RosslerSystem())
         elif self.combobox.get() == "Chua's circuit":
             self.plot.new_equation(equation.ChuaCircuit())
         elif self.combobox.get() == "Chen system":
@@ -165,7 +167,7 @@ class Window:
         elif self.combobox.get() == "Aizawa system":
             self.plot.new_equation(equation.AizawaSystem())
         else:
-            self.plot.new_equation(equation.RosslerSystem())
+            self.plot.new_equation(equation.Equation())
         self.ani.frame_seq = self.plot.equation.data_gen()
         self.set_sliders()
         self.load_param_dict()

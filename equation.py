@@ -67,9 +67,10 @@ class LorenzSystem(Equation):
 
     def derivatives(self, _, state):
         x, y, z = state
-        return self.params["sigma"] * (y - x), \
-            x * (self.params["rho"] - z) - y, \
-            x * y - self.params["beta"] * z
+        dx = self.params["sigma"] * (y - x)
+        dy = x * (self.params["rho"] - z) - y
+        dz = x * y - self.params["beta"] * z
+        return dx, dy, dz
 
     def data_gen(self):
         for cnt in itertools.count():
@@ -97,7 +98,7 @@ class RosslerSystem(Equation):
         self.z = [0.0]
 
         self.xlim = (-15, 15)
-        self.ylim = (-20, 10)
+        self.ylim = (-15, 10)
         self.zlim = (-3, 25)
 
         self.params = {"a": 0.2,  # 0.2
@@ -111,7 +112,10 @@ class RosslerSystem(Equation):
 
     def derivatives(self, _, state):
         x, y, z = state
-        return -y - z, x + self.params["a"] * y, self.params["b"] + z * (x - self.params["c"])
+        dx = -y - z
+        dy = x + self.params["a"] * y
+        dz = self.params["b"] + z * (x - self.params["c"])
+        return dx, dy, dz
 
     def data_gen(self):
         for cnt in itertools.count():
@@ -202,9 +206,10 @@ class ChenSystem(Equation):
 
     def derivatives(self, _, state):
         x, y, z = state
-        return self.params["a"] * (y - x), \
-            (self.params["c"]-self.params["a"])*x - x*z + self.params["c"]*y,\
-            x * y - self.params["b"] * z
+        dx = self.params["a"] * (y - x)
+        dy = (self.params["c"] - self.params["a"]) * x - x*z + self.params["c"]*y
+        dz = x * y - self.params["b"] * z
+        return dx, dy, dz
 
     def data_gen(self):
         for cnt in itertools.count():
@@ -244,9 +249,10 @@ class ThomasSystem(Equation):
 
     def derivatives(self, _, state):
         x, y, z = state
-        return np.sin(y) - self.params["b"] * x, \
-            np.sin(z) - self.params["b"] * y,\
-            np.sin(x) - self.params["b"] * z
+        dx = np.sin(y) - self.params["b"] * x
+        dy = np.sin(z) - self.params["b"] * y
+        dz = np.sin(x) - self.params["b"] * z
+        return dx, dy, dz
 
     def data_gen(self):
         for cnt in itertools.count():
@@ -291,10 +297,11 @@ class AizawaSystem(Equation):
 
     def derivatives(self, _, state):
         x, y, z = state
-        return (z - self.params["b"]) * x - self.params["d"] * y,\
-            self.params["d"] * x + (z - self.params["b"]) * y,\
-            self.params["c"] + self.params["a"]*z - z**3 / 3 \
+        dx = (z - self.params["b"]) * x - self.params["d"] * y
+        dy = self.params["d"] * x + (z - self.params["b"]) * y
+        dz = self.params["c"] + self.params["a"]*z - z**3 / 3 \
             - (x*x + y*y) * (1 + self.params["e"]*z) + self.params["f"]*z * x**3
+        return dx, dy, dz
 
     def data_gen(self):
         for cnt in itertools.count():
