@@ -7,6 +7,9 @@ import equation
 
 
 class Window:
+    """
+    Basic window containing GUI elements and animated plot.
+    """
     def __init__(self, plot):
         self.plot = plot
         self.root = ThemedTk(theme='breeze')
@@ -45,8 +48,8 @@ class Window:
                                            interval=20, blit=False, cache_frame_data=False)
 
     def set_window_geometry(self):
-        width = self.root.winfo_screenwidth()
-        height = self.root.winfo_screenheight()
+        width = 1250
+        height = 650
         self.root.geometry("%dx%d" % (width, height))
         self.root.title("Deterministic chaos")
 
@@ -88,6 +91,7 @@ class Window:
     def add_options_to_list(self):
         self.combobox['values'] = ("Lorenz system",
                                    "Rössler system",
+                                   "Chua's circuit",
                                    "Chen system",
                                    "Thomas system",
                                    "Aizawa system")
@@ -152,6 +156,8 @@ class Window:
     def update_equation(self, event=None):
         if self.combobox.get() == "Lorenz system":
             self.plot.new_equation(equation.LorenzSystem())
+        elif self.combobox.get() == "Chua's circuit":
+            self.plot.new_equation(equation.ChuaCircuit())
         elif self.combobox.get() == "Chen system":
             self.plot.new_equation(equation.ChenSystem())
         elif self.combobox.get() == "Thomas system":

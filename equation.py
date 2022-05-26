@@ -4,6 +4,14 @@ from scipy.integrate import solve_ivp
 
 
 class Equation:
+    """
+    Base class for a system of equations.
+
+    x, y, z - history of calculated points;
+    axes - currently visible axes (0 - x&y, 1 - y&z, 2 - x&z);
+    xlim, ylim, zlim - limits of the visible coordinate system;
+    params - dictionary containing all parameters of the system of equations;
+    """
     def __init__(self):
         self.x = [0]
         self.y = [0]
@@ -57,7 +65,7 @@ class LorenzSystem(Equation):
         self.y = [y] if y else [1.]
         self.z = [z] if z else [1.]
 
-    def derivatives(self, t, state):
+    def derivatives(self, _, state):
         x, y, z = state
         return self.params["sigma"] * (y - x), \
             x * (self.params["rho"] - z) - y, \
@@ -101,7 +109,7 @@ class RosslerSystem(Equation):
         self.y = [y] if y else [0.]
         self.z = [z] if z else [0.]
 
-    def derivatives(self, t, state):
+    def derivatives(self, _, state):
         x, y, z = state
         return -y - z, x + self.params["a"] * y, self.params["b"] + z * (x - self.params["c"])
 
@@ -109,7 +117,7 @@ class RosslerSystem(Equation):
         for cnt in itertools.count():
             i = cnt
             state = [self.x[-1], self.y[-1], self.z[-1]]
-            sol = solve_ivp(self.derivatives, [i/5, (i+1)/5], state)
+            sol = solve_ivp(self.derivatives, [i/10, (i+1)/10], state, method='DOP853')
             yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
 
     def __str__(self):
@@ -121,6 +129,55 @@ class RosslerSystem(Equation):
                "dx/dt = -y - z\n" \
                "dy/dt = x + ay\n" \
                "dz/dt = b + z(x - c)"
+
+
+class ChuaCircuit(Equation):
+    def __init__(self):
+        super().__init__()
+        self.x = [0.1]
+        self.y = [0.1]
+        self.z = [0.1]
+
+        self.xlim = (-3, 3)
+        self.ylim = (-2, 2)
+        self.zlim = (-6, 6)
+
+        self.params = {"alpha": 15.395,  # 15.395
+                       "beta": 28.}      # 28.
+
+    def set_initial_conditions(self, x=None, y=None, z=None):
+        self.x = [x] if x else [0.1]
+        self.y = [y] if y else [0.1]
+        self.z = [z] if z else [0.1]
+
+    @staticmethod
+    def f(x):
+        return -0.714*x - 0.2145*(abs(x+1) - abs(x-1))
+
+    def derivatives(self, _, state):
+        x, y, z = state
+        dx = self.params["alpha"] * (y - x - self.f(x))
+        dy = x - y + z
+        dz = -self.params["beta"] * y
+        return dx, dy, dz
+
+    def data_gen(self):
+        for cnt in itertools.count():
+            i = cnt
+            state = [self.x[-1], self.y[-1], self.z[-1]]
+            sol = solve_ivp(self.derivatives, [i, (i+1)], state)
+            yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
+
+    def __str__(self):
+        return "Chua's circuit"
+
+    @staticmethod
+    def text_equation():
+        return "Chua's circuit:\n" \
+               "dx/dt = alpha * (y - x - f(x))\n" \
+               "dy/dt = x - y + z\n" \
+               "dz/dt = -beta * y\n\n" \
+               "f(x) = -0.714x-0.2145(|x+1|-|x-1|)"
 
 
 class ChenSystem(Equation):
@@ -143,7 +200,7 @@ class ChenSystem(Equation):
         self.y = [y] if y else [0.5]
         self.z = [z] if z else [-0.6]
 
-    def derivatives(self, t, state):
+    def derivatives(self, _, state):
         x, y, z = state
         return self.params["a"] * (y - x), \
             (self.params["c"]-self.params["a"])*x - x*z + self.params["c"]*y,\
@@ -185,7 +242,7 @@ class ThomasSystem(Equation):
         self.y = [y] if y else [1.1]
         self.z = [z] if z else [-0.01]
 
-    def derivatives(self, t, state):
+    def derivatives(self, _, state):
         x, y, z = state
         return np.sin(y) - self.params["b"] * x, \
             np.sin(z) - self.params["b"] * y,\
@@ -195,7 +252,7 @@ class ThomasSystem(Equation):
         for cnt in itertools.count():
             i = cnt
             state = [self.x[-1], self.y[-1], self.z[-1]]
-            sol = solve_ivp(self.derivatives, [i, (i+1)], state)
+            sol = solve_ivp(self.derivatives, [i, (i+1)], state, method='DOP853')
             yield sol.y[0, 1], sol.y[1, 1], sol.y[2, 1]
 
     def __str__(self):
@@ -232,7 +289,7 @@ class AizawaSystem(Equation):
         self.y = [y] if y else [1.00]
         self.z = [z] if z else [0.01]
 
-    def derivatives(self, t, state):
+    def derivatives(self, _, state):
         x, y, z = state
         return (z - self.params["b"]) * x - self.params["d"] * y,\
             self.params["d"] * x + (z - self.params["b"]) * y,\

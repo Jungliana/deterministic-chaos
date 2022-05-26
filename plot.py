@@ -1,11 +1,13 @@
-from matplotlib import pyplot as plt
-from equation import Equation
 import matplotlib as mpl
+from matplotlib import pyplot as plt
 from cycler import cycler
+from equation import Equation
 
 
 class Plot:
-
+    """
+    Animated Matplotlib plot.
+    """
     def __init__(self, eq=None):
         mpl.rcParams['axes.prop_cycle'] = cycler(color=['b', 'm', 'k'])
         self.equation = eq if eq is not None else Equation()
